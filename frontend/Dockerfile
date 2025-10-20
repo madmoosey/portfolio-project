@@ -15,5 +15,5 @@ COPY . .
 # Expose Vite dev port
 EXPOSE 5173
 
-# Default command for dev mode
-CMD ["npm", "run", "dev"]
+# Run Vite dev server on all interfaces (important!)
+CMD ["npm", "run", "dev", "--", "--host"]
