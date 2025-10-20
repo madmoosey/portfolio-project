@@ -51,7 +51,7 @@ jobs:
         with:
           args: --acl public-read --delete
         env:
-          AWS_S3_BUCKET: goonsquad
+          AWS_S3_BUCKET: gallerie-portfolio
           AWS_REGION: ${{ secrets.AWS_REGION }}
           SOURCE_DIR: frontend/dist
 
