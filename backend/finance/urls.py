@@ -7,5 +7,5 @@ router.register(r'categories', CategoryViewSet, basename='category')
 router.register(r'transactions', TransactionViewSet, basename='transaction')
 
 finance_urlpatterns = [
-    path('api/', include(router.urls)),
+    path('finance/', include(router.urls)),
 ]

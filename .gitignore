@@ -10,7 +10,7 @@ __pycache__/
 *.sqlite3
 *.db
 *.DS_Store
-.env
+.env*
 .venv
 venv/
 .env.local

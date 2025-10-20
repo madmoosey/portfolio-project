@@ -5,8 +5,6 @@ name = "pypi"
 
 [packages]
 requests = "*"
-django = "*"
-djangorestframework = "*"
 djangorestframework-simplejwt = "*"
 psycopg2-binary = "*"
 drf-spectacular = "*"
@@ -14,6 +12,8 @@ whitenoise = "*"
 gunicorn = "*"
 dj-database-url = "*"
 django-cors-headers = "*"
+django = "*"
+djangorestframework = "*"
 
 [dev-packages]
 

@@ -26,11 +26,8 @@ from finance.urls import finance_urlpatterns
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("finance.urls")),  # your app
+    path("api/", include(finance_urlpatterns)),  # your app
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
 ]
-
-
-urlpatterns += finance_urlpatterns
