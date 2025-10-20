@@ -14,18 +14,18 @@ services:
     depends_on:
       - db
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #   container_name: vite-frontend-dev
-  #   command: npm run dev
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #   ports:
-  #     - "5173:5173"
-  #   environment:
-  #     - NODE_ENV=development
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vite-frontend-dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
 
   db:
     image: postgres:16
