@@ -1,0 +1,65 @@
+name: Deploy to AWS ECS
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      BACKEND_REPO: ${{ secrets.ECR_BACKEND_REPO }}
+      FRONTEND_REPO: ${{ secrets.ECR_FRONTEND_REPO }}
+      ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---------- Build & Push Backend ----------
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build backend image
+        run: |
+          docker build -f backend/Dockerfile -t $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$BACKEND_REPO:latest ./backend
+
+      - name: Push backend image to ECR
+        run: |
+          docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$BACKEND_REPO:latest
+
+      # ---------- Build & Push Frontend ----------
+      - name: Build frontend (Vite)
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+          tar -czf build.tar.gz dist
+
+      - name: Upload frontend build to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --delete
+        env:
+          AWS_S3_BUCKET: goonsquad
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SOURCE_DIR: frontend/dist
+
+      # ---------- Deploy Backend ECS ----------
+      - name: Force new ECS deployment
+        run: |
+          aws ecs update-service \
+            --cluster gallerie-cluster \
+            --service gallerie-service \
+            --force-new-deployment \
+            --region $AWS_REGION
