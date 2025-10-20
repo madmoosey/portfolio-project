@@ -59,7 +59,7 @@ jobs:
       - name: Force new ECS deployment
         run: |
           aws ecs update-service \
-            --cluster gallerie-cluster \
+            --cluster gallerie-cluster-2 \
             --service gallerie-service \
             --force-new-deployment \
             --region $AWS_REGION
