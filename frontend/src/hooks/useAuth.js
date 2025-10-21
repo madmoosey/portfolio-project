@@ -1,31 +1,41 @@
-import { useEffect, useState } from "react";
-import { API_BASE_URL } from "../config";
+// src/hooks/useAuth.js
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { verifyToken, refreshToken, logout } from "../auth";
 
 export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    async function checkAuth() {
-      try {
-        // Check with backend session or token endpoint
-        const res = await fetch(`${API_BASE_URL}/api/auth/user/`, {
-          credentials: "include", // allows Django session cookies
-        });
-        if (res.ok) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (err) {
-        console.error("Error checking auth:", err);
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
-      }
-    }
-    checkAuth();
-  }, []);
+    let intervalId;
 
-  return { isAuthenticated, loading };
+    async function checkAuth() {
+      const token = localStorage.getItem("access");
+      if (!token) {
+        setIsAuthenticated(false);
+        navigate("/login");
+        setLoading(false);
+        return;
+      }
+
+      const valid = await verifyToken(token);
+      if (valid) {
+        setIsAuthenticated(true);
+      } else {
+        const refreshed = await refreshToken();
+        setIsAuthenticated(refreshed);
+        if (!refreshed) navigate("/login");
+      }
+      setLoading(false);
+    }
+
+    checkAuth();
+
+    intervalId = setInterval(checkAuth, 5 * 60 * 1000); // refresh every 5 min
+    return () => clearInterval(intervalId);
+  }, [navigate]);
+
+  return { isAuthenticated, loading, logout };
 }

@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { API_BASE_URL } from "../config";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { login } from "../auth"; // <-- from your auth.js
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("admin@example.com"); // using email for JWT auth
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -16,22 +18,9 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/login/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // for Django session cookies
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.detail || "Invalid credentials");
-      }
-
+      await login(email, password);
       setSuccess(true);
-      window.location.href = "/"; // redirect to home after login
+      setTimeout(() => navigate("/"), 1200); // short delay before redirect
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
@@ -49,9 +38,8 @@ export default function LoginPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h1 className="text-center text-4xl mb-6">
-          enter The Department
-        </h1>
+        <h1 className="text-center text-4xl mb-6">enter The Department</h1>
+
         {error && (
           <div className="bg-red-500/20 text-red-300 p-3 rounded mb-4 text-sm">
             {error}
@@ -62,12 +50,13 @@ export default function LoginPage() {
             returning to glory...
           </div>
         )}
+
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <input
-            type="text"
-            placeholder="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             className="bg-zinc-800 border border-zinc-700 rounded px-4 py-3 text-white focus:outline-none focus:border-blue-500"
           />
@@ -86,6 +75,7 @@ export default function LoginPage() {
             Log In
           </button>
         </form>
+
         <p className="text-sm text-center text-gray-400 mt-6">
           are you uninitiated? sigh,{" "}
           <a href="/signup" className="text-blue-400 hover:text-blue-300">

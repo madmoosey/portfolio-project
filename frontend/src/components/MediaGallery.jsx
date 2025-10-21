@@ -10,9 +10,22 @@ export default function MediaGallery() {
   useEffect(() => {
     async function fetchMedia() {
       try {
+        // Retrieve the JWT token (stored after login)
+        const token = localStorage.getItem("access");
+
+        if (!token) {
+          console.error("No JWT token found. User may not be logged in.");
+          setLoading(false);
+          return;
+        }
+
         const res = await fetch(`${API_BASE_URL}/api/media/`, {
-          credentials: "include",
+          headers: {
+            // "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         });
+
         if (!res.ok) throw new Error("Failed to fetch media");
         const data = await res.json();
         setMedia(data);
@@ -22,6 +35,7 @@ export default function MediaGallery() {
         setLoading(false);
       }
     }
+
     fetchMedia();
   }, []);
 

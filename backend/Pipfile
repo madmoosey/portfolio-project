@@ -11,9 +11,10 @@ drf-spectacular = "*"
 whitenoise = "*"
 gunicorn = "*"
 dj-database-url = "*"
-django-cors-headers = "*"
 django = "*"
 djangorestframework = "*"
+django-extensions = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

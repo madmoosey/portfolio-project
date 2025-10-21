@@ -1,11 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import MediaGallery from "./components/MediaGallery";
 import LoginPrompt from "./components/LoginPrompt";
 import Loader from "./components/Loader";
 import Title from "./components/Title";
 import LoginPage from "./pages/LoginPage";
+import Navbar from "./components/Navbar"; 
 
 export default function App() {
   const { isAuthenticated, loading } = useAuth();
@@ -13,8 +14,10 @@ export default function App() {
   if (loading) return <Loader message="Checking your login status..." />;
 
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white">
+    <div className="min-h-screen bg-black text-white flex flex-col">
+      <Navbar /> 
+
+      <div className="flex-grow flex flex-col items-center justify-center pt-20">
         <Routes>
           <Route
             path="/"
@@ -28,6 +31,6 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
         </Routes>
       </div>
-    </Router>
+    </div>
   );
 }
