@@ -17,7 +17,7 @@ export default function App() {
     <div className="min-h-screen bg-black text-white flex flex-col">
       <Navbar /> 
 
-      <div className="flex-grow flex flex-col items-center justify-center pt-20">
+      <div className="flex-grow flex flex-col items-center justify-center pt-20 px-4">
         <Routes>
           <Route
             path="/"
