@@ -155,10 +155,11 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'users.User'
 
 CORS_ALLOWED_ORIGINS = [
-    "https://example.com",
-    "https://frontend.example.com",
+    "https://d102xxuogi38rx.cloudfront.net",
+    "https://portfolio.groovebox.link",
     "http://localhost:5173",  # your dev frontend
 ]
+
 CORS_ALLOW_CREDENTIALS = True
 
 MEDIA_URL = '/media/'
