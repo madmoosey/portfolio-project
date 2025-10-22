@@ -57,20 +57,20 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           SOURCE_DIR: frontend/dist
 
-      # ---------- Deploy Backend ECS ----------
-      - name: Force new ECS deployment
-        run: |
-          aws ecs update-service \
-            --cluster gallerie-cluster \
-            --service gallerie-service \
-            --force-new-deployment \
-            --region $AWS_REGION
+      # # ---------- Deploy Backend ECS ----------
+      # - name: Force new ECS deployment
+      #   run: |
+      #     aws ecs update-service \
+      #       --cluster gallerie-cluster \
+      #       --service gallerie-service \
+      #       --force-new-deployment \
+      #       --region $AWS_REGION
 
-      - name: Invalidate CloudFront cache
-        uses: chetan/invalidate-cloudfront-action@v2
-        env:
-          DISTRIBUTION: EMF3PGTNF2AMD
-          PATHS: "/*"
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # - name: Invalidate CloudFront cache
+      #   uses: chetan/invalidate-cloudfront-action@v2
+      #   env:
+      #     DISTRIBUTION: EMF3PGTNF2AMD
+      #     PATHS: "/*"
+      #     AWS_REGION: ${{ secrets.AWS_REGION }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
