@@ -181,15 +181,27 @@ AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 # Static & Media Configuration
 # -------------------------------
 
-# Static files on S3
-STATICFILES_STORAGE = "photos.storage_backends.StaticStorage"
-STATIC_URL = f"https://{AWS_S3_STATIC_BUCKET_NAME}.s3.amazonaws.com/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
 
+STORAGES = {
+    "default": {
+        "BACKEND": "photos.storage_backends.PrivateMediaStorage",
+        "OPTIONS": {
+            "bucket_name": AWS_S3_MEDIA_BUCKET_NAME,
+            "region_name": AWS_S3_REGION_NAME,
+            "file_overwrite": False,  # keeps existing files
+            "default_acl": "private",  # optional, or use bucket policy
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "photos.storage_backends.StaticStorage",
+        "OPTIONS": {
+            "bucket_name": AWS_S3_STATIC_BUCKET_NAME,
+            "region_name": AWS_S3_REGION_NAME,
+            "default_acl": "public-read",
+        },
+    },
+}
 
-# Media files (optional)
-DEFAULT_FILE_STORAGE = "photos.storage_backends.PrivateMediaStorage"
-MEDIA_URL = f"https://{AWS_S3_MEDIA_BUCKET_NAME}.s3.amazonaws.com/media/"
 
 AWS_QUERYSTRING_AUTH = True   # presigned URLs for private media
 AWS_PERSISTENCE_MAX_RETRIES = 5
