@@ -33,7 +33,7 @@ export default function Navbar() {
               to="/"
               className="text-sm text-gray-300 hover:text-white transition"
             >
-              My Media
+              my gallerie
             </Link>
             <button
               onClick={handleLogout}

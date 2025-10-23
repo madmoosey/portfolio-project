@@ -21,7 +21,7 @@ export default function MediaGallery() {
 
         const res = await fetch(`${API_BASE_URL}/api/media/`, {
           headers: {
-            // "Authorization": `Bearer ${token}`,
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });

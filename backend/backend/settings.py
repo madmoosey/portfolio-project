@@ -22,13 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i!=qc0ph7mu1bya^=6fllf$^h=5e^&e%nob7t+y5u!&93ulox@'
+SECRET_KEY = os.getenv("DEBUG", 'django-insecure-i!=qc0ph7mu1bya^=6fllf$^h=5e^&e%nob7t+y5u!&93ulox@')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", default=False)
-
-ALLOWED_HOSTS = ["*"]
-
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 
 # Application definition
 
@@ -156,25 +154,11 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'users.User'
 
 CORS_ALLOWED_ORIGINS = [
-    "https://d102xxuogi38rx.cloudfront.net",
-    "https://portfolio.groovebox.link",
     "http://localhost:5173",  # your dev frontend
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
-# -------------------------------
-# Static & Media Configuration
-# -------------------------------
-
-
-# Static files
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# Media files (optional)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / "media"
 
 # -------------------------------
 # AWS S3 Settings
@@ -182,14 +166,31 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STATIC_BUCKET_NAME")
 AWS_S3_REGION_NAME = os.getenv("AWS_REGION", "us-east-1")
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+
+# ----------------- STATIC FILES -----------------
+AWS_S3_STATIC_BUCKET_NAME = os.getenv('AWS_S3_STATIC_BUCKET_NAME',"gallerie-static-dev")
+AWS_S3_MEDIA_BUCKET_NAME = os.getenv('AWS_S3_MEDIA_BUCKET_NAME', "gallerie-media")
+
+# Public static files (served by CloudFront or S3 directly)
+AWS_DEFAULT_ACL = None  # recommended default
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+
+
+# -------------------------------
+# Static & Media Configuration
+# -------------------------------
 
 # Static files on S3
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
+STATICFILES_STORAGE = "photos.storage_backends.StaticStorage"
+STATIC_URL = f"https://{AWS_S3_STATIC_BUCKET_NAME}.s3.amazonaws.com/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 # Media files (optional)
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+DEFAULT_FILE_STORAGE = "photos.storage_backends.PrivateMediaStorage"
+MEDIA_URL = f"https://{AWS_S3_MEDIA_BUCKET_NAME}.s3.amazonaws.com/media/"
+
+AWS_QUERYSTRING_AUTH = True   # presigned URLs for private media
+AWS_PERSISTENCE_MAX_RETRIES = 5
+AWS_S3_SIGNATURE_VERSION = "s3v4"

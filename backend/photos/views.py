@@ -4,7 +4,8 @@ from .serializers import MediaSerializer
 
 class MediaListCreateView(generics.ListAPIView):
     serializer_class = MediaSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
+
 
     def get_queryset(self):
         # Only return media belonging to the logged-in user
