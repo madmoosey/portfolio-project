@@ -10,13 +10,13 @@ psycopg2-binary = "*"
 drf-spectacular = "*"
 whitenoise = "*"
 gunicorn = "*"
-dj-database-url = "*"
 django = "*"
 djangorestframework = "*"
 django-extensions = "*"
 django-cors-headers = "*"
 boto3 = "*"
 django-storages = "*"
+dj-database-url = "*"
 
 [dev-packages]
 
