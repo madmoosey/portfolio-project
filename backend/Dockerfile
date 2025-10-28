@@ -30,7 +30,7 @@ RUN pip install --upgrade pip && pip install pipenv \
 # ==========================
 # 2️⃣ Runtime Stage
 # ==========================
-FROM python:3.12-slim AS runtime
+FROM python:3.13-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
